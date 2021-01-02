@@ -1,0 +1,125 @@
+
+
+CREATE TABLE IF NOT EXISTS `e107_games` (
+  `id` int(50) NOT NULL AUTO_INCREMENT,
+  `Title` text NOT NULL,
+  `Slug` text NOT NULL,
+  `NewsTags` text NOT NULL,
+  `NewsTagsSELECTED` text NOT NULL,
+  `NewsIds` text NOT NULL,
+  `NewsIdsSelected` text NOT NULL,
+  `Category` text NOT NULL,
+  `CategorySELECTED` text NOT NULL,
+  `Known` text NOT NULL,
+  `Region` text NOT NULL,
+  `Year` text NOT NULL,
+  `Developer` text NOT NULL,
+  `Platform` text NOT NULL,
+  `platformSelected` text NOT NULL,
+  `ReleaseDate` text NOT NULL,
+  `ReviewIDs` text NOT NULL,
+  `reviewSelected` text NOT NULL,
+  `Players` text NOT NULL,
+  `Series` text NOT NULL,
+  `ReleaseDate2` text NOT NULL,
+  `Review` text NOT NULL,
+  `UserSays` text NOT NULL,
+  `UserSaysFull` text NOT NULL,
+  `Content` text NOT NULL,
+  `Media` text NOT NULL,
+  `Screenshot1` text NOT NULL,
+  `Screenshot2` text NOT NULL,
+  `Screenshot3` text NOT NULL,
+  `Screenshot4` text NOT NULL,
+  `Screenshot5` text NOT NULL,
+  `Screenshot6` text NOT NULL,
+  `test` text NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=21 ;
+
+
+
+
+CREATE TABLE IF NOT EXISTS `e107_games_categories` (
+  `gameCatID` int(11) NOT NULL AUTO_INCREMENT,
+  `gameCatName` text NOT NULL,
+  PRIMARY KEY (`gameCatID`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4 ;
+
+
+
+
+CREATE TABLE IF NOT EXISTS `e107_games_platforms` (
+  `platform_id` int(50) NOT NULL AUTO_INCREMENT,
+  `platform_name` text NOT NULL,
+  PRIMARY KEY (`platform_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
+
+
+
+
+CREATE TABLE IF NOT EXISTS `e107_games_reviews` (
+  `ID` int(50) NOT NULL AUTO_INCREMENT,
+  `Title` text NOT NULL,
+  `ReviewsGame` text NOT NULL,
+  `ReviewGameSelected` text NOT NULL,
+  `UniqueReviewTitle` text NOT NULL,
+  `Content` text NOT NULL,
+  `Description` text NOT NULL,
+  `ReviewType` text NOT NULL,
+  `TheGood` text NOT NULL,
+  `TheBad` text NOT NULL,
+  `Rating` text NOT NULL,
+  `Image` text NOT NULL,
+  `Member` text NOT NULL,
+  PRIMARY KEY (`ID`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
+
+
+
+
+CREATE TABLE IF NOT EXISTS `e107_game_comment` (
+  `commentID` int(50) NOT NULL AUTO_INCREMENT,
+  `commentUserID` text NOT NULL,
+  `postID` text NOT NULL,
+  `commentRating` text NOT NULL,
+  `commentPlatform` text NOT NULL,
+  `commentTitle` text NOT NULL,
+  `postComment` text NOT NULL,
+  `userImage` text NOT NULL,
+  `commentDate` text NOT NULL,
+  PRIMARY KEY (`commentID`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=15 ;
+
+
+
+
+CREATE TABLE IF NOT EXISTS `e107_news` (
+  `news_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `news_title` varchar(255) NOT NULL DEFAULT '',
+  `news_sef` varchar(200) NOT NULL DEFAULT '',
+  `news_body` longtext NOT NULL,
+  `news_extended` longtext NOT NULL,
+  `news_meta_keywords` varchar(255) NOT NULL DEFAULT '',
+  `news_meta_description` text NOT NULL,
+  `news_datestamp` int(10) unsigned NOT NULL DEFAULT 0,
+  `news_author` int(10) unsigned NOT NULL DEFAULT 0,
+  `news_category` tinyint(3) unsigned NOT NULL DEFAULT 0,
+  `news_allow_comments` tinyint(3) unsigned NOT NULL DEFAULT 0,
+  `news_start` int(10) unsigned NOT NULL DEFAULT 0,
+  `news_end` int(10) unsigned NOT NULL DEFAULT 0,
+  `news_class` varchar(255) NOT NULL DEFAULT '0',
+  `news_render_type` varchar(20) NOT NULL DEFAULT '0',
+  `news_comment_total` int(10) unsigned NOT NULL DEFAULT 0,
+  `news_summary` text NOT NULL,
+  `news_thumbnail` text NOT NULL,
+  `news_sticky` tinyint(3) unsigned NOT NULL DEFAULT 0,
+  `news_template` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`news_id`),
+  KEY `news_category` (`news_category`),
+  KEY `news_start_end` (`news_start`,`news_end`),
+  KEY `news_datestamp` (`news_datestamp`),
+  KEY `news_sticky` (`news_sticky`),
+  KEY `news_render_type` (`news_render_type`),
+  KEY `news_class` (`news_class`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4 ;
