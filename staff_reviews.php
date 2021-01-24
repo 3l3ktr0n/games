@@ -15,199 +15,165 @@ if ($link->connect_error) {
 
 $gameID = $_GET['id'];
 
-if($gameID != "")
-
-  {
+if($gameID != ""){
 
     if($result = mysqli_query($link, "SELECT * FROM e107_games")){
 
-
-
         if(mysqli_num_rows($result) > 0){
-
-        ?>
-
-        
-
-        <?php
 
             while($row = mysqli_fetch_array($result)){
 
-              if($row['id'] == $gameID)
+                if($row['id'] == $gameID){
 
-              {
+                    //$newsCatSelected = $row['NewsCategory'];
 
-                //$newsCatSelected = $row['NewsCategory'];
+                    $reviewIDs = $row['reviewSelected'];              
+
+                    //$reviewID_Array = explode(",", $reviewIDs);
+
+                    $reviewLoop = 0;
+
+                        /*foreach($reviewID_Array as $reviewID){
+
+                            $reviewLoop++;
+
+                            if($reviewLoop == 1){
+
+                                $reviewQuery =  'WHERE (ID='.$reviewID.')';
+
+                            }
+
+                            else if($reviewLoop >= 1){
+
+                                $reviewQuery .=  ' or (ID='.$reviewID.')';
+
+                            }
+
+                        }  */
+                    $reviewGameQuery = 'WHERE FIND_IN_SET('.$gameID.',ReviewGameSelected)';
+
+                        if($result_review = mysqli_query($link, "SELECT * FROM e107_games_reviews ".$reviewGameQuery)){
+
+                            if(mysqli_num_rows($result_review) > 0){
+
+                            ?>
+
+                                <h3>What Users says about this Game.</h3>
+
+                                <?php
+
+                                while($row_review = mysqli_fetch_array($result_review)){
+                                    //print_r($row_review);
+                                    $review_title = $row_review["Title"];                        
+
+                                    $imagePath = str_replace("{e_MEDIA_IMAGE}","",$row_review['Image']);
+
+                                    $imageURL = SITEURL.e_MEDIA_IMAGE.$imagePath;
+
+                                    $currentReviewID = $row_review['ID'];
+
+                                    $reviewID_URL = SITEURL."review.php?id=".$currentReviewID;
+
+                                    $reviewTitle = $row_review['Title'];
+
+                                    $reviewRating = $row_review['Rating'];
+
+                                    $reviewDescription = $row_review['Description'];
+
+                                    $reviewType = $row_review['ReviewType'];
+
+                                    ?>
+
+                                    <div class="col-sm-12 game_box reviewBOX">
+
+                                        <div class="reviewBox_left">
+
+                                        <!-- <div class="reviewID"><?php echo $currentReviewID;  ?></div> -->
+
+                                            <div class="reviewTitle">
+
+                                                <a href="<?php echo $reviewID_URL; ?>">
+
+                                                    <?php echo $reviewTitle;?>                            
+
+                                                </a>
+
+                                            </div>
 
 
 
-               $reviewIDs = $row['reviewSelected'];              
+                                            <div class="review_Content">
 
-               //$reviewID_Array = explode(",", $reviewIDs);
+                                                <div class="review_cover">
 
-               
+                                                    <a class="img" href="<?php echo $reviewID_URL; ?>">  
 
-               $reviewLoop = 0;
+                                                        <img src="<?php echo $imageURL; ?>">
 
-               /*foreach($reviewID_Array as $reviewID)
+                                                    </a>
 
-               {
+                                                </div>
 
-                 $reviewLoop++;
+                                                <div class="revie_shortContent">
 
-                 if($reviewLoop == 1)
+                                                    <p><?php  echo $reviewDescription; ?></p>
 
-                 {
+                                                    <div class="reviewReadmore">
 
-                     $reviewQuery =  'WHERE (ID='.$reviewID.')';
+                                                        <a href="<?php echo $reviewID_URL; ?>">Read more</a>
 
-                 }
+                                                    </div>
 
-                 else if($reviewLoop >= 1)
+                                                </div>
 
-                 {
+                                            </div>
 
-                     $reviewQuery .=  ' or (ID='.$reviewID.')';
+                                        </div>
 
-                 }
+                                        <div class="reviewBox_right">
 
-               }  */
-$reviewGameQuery = 'WHERE FIND_IN_SET('.$gameID.',ReviewGameSelected)';
+                                            <div class="rating_box">
 
-                   if($result_review = mysqli_query($link, "SELECT * FROM e107_games_reviews ".$reviewGameQuery)){
+                                                <h4>Game rating</h4>          
 
-                           if(mysqli_num_rows($result_review) > 0){
-                    ?>
+                                                <div class="rating_bg" style="background:url(<?php echo $starImage; ?>);">  
 
-                    <h3>What Users says about this Game.</h3>
+                                                    <?php 
 
-                    <?php
+                                                    echo $reviewRating; 
 
-                             while($row_review = mysqli_fetch_array($result_review)){
-//print_r($row_review);
-                             $review_title = $row_review["Title"];                        
+                                                    ?>           
 
-                    $imagePath = str_replace("{e_MEDIA_IMAGE}","",$row_review['Image']);
+                                                </div>
 
-                    $imageURL = SITEURL.e_MEDIA_IMAGE.$imagePath;
+                                            </div>                     
 
-                    $currentReviewID = $row_review['ID'];
+                                        </div>
 
-                    $reviewID_URL = SITEURL."review.php?id=".$currentReviewID;
+                                    </div>
 
+                                    <?php                          
 
+                                }//end while $row_review
 
-                    $reviewTitle = $row_review['Title'];
+                            }//end if mysqli_num_rows
 
-                    $reviewRating = $row_review['Rating'];
-
-                    $reviewDescription = $row_review['Description'];
-
-                    $reviewType = $row_review['ReviewType'];
-
-
-                        ?>
-
-                            <div class="col-sm-12 game_box reviewBOX">
-
-                              <div class="reviewBox_left">
-
-                             <!-- <div class="reviewID"><?php echo $currentReviewID;  ?></div> -->
-
+                        else {
                             
-
-                            <div class="reviewTitle">
-
-                          <a href="<?php echo $reviewID_URL; ?>">
-
-                            <?php echo $reviewTitle;?>                            
-
-                            </a>
-
-                      </div>
-
-
-
-                      <div class="review_Content">
-
-                      <div class="review_cover">
-
-                      <a class="img" href="<?php echo $reviewID_URL; ?>">  
-
-                        <img src="<?php echo $imageURL; ?>">
-
-                        </a>
-
-                      </div>
-
-                      <div class="revie_shortContent">
-
-                        <p><?php  echo $reviewDescription; ?></p>
-
-                        <div class="reviewReadmore">
-
-                          <a href="<?php echo $reviewID_URL; ?>">
-
-                               Read more
-
-                             </a>
-
-                         </div>
-
-                      </div>
-
-                      </div>
-
-
-
-
-
-                            </div>
-
-                            <div class="reviewBox_right">
-
-                              <div class="rating_box">
-
-                     <h4>Game rating</h4>          
-
-                             <div class="rating_bg" style="background:url(<?php echo $starImage; ?>);">  
-
-                     <?php 
-
-                       echo $reviewRating; 
-
-                     ?>           
-
-                     </div>
-
-                </div>                     
-
-                            </div>
-
-
-
-                    </div>
-
-                        <?php
-
-                          
-
-                              }
-
-                           }
-else { echo "We have no review for this game yet. If you've played it, write a review and tell us what you think!";}
+                            echo "We have no review for this game yet. If you've played it, write a review and tell us what you think!";
+                            
                         }
 
-                              }
+                        }//end if $result_review
 
-                           }
+                }//end if $row['id']
 
-                        }
+            }//end while row
 
-                           }
+        }//end if mysqli_num_rows
 
-                        }
+    }//end if $result
 
-             
+}//end if gameID
 
 ?>
