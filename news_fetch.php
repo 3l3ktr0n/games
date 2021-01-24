@@ -181,4 +181,5 @@ if($sizeNewsTag == "")
   //print_r($news_tag_id_array);   
  // print_r($NewsIds); 
  //var_dump($row_news_array);
+  
 ?>
