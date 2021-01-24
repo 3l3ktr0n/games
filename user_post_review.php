@@ -112,19 +112,19 @@ $gameID = $_GET['id'];
 
                                         <?php 
                                         
-                                        } 
+                                    } 
                                         
-                                        else {
+                                    else {
 
                                         ?>
 
-                                            <select name="user_rating" style="display: none;"><option value="0">0</option></select>
+                                        <select name="user_rating" style="display: none;"><option value="0">0</option></select>
 
-                                            <?php
+                                        <?php
 
-                                        } 
+                                    }//end if $currentUserID != 0 && $userCommentPost < 1
                                         
-                                        ?>
+                                    ?>
 
                                     </div>      
 
@@ -170,7 +170,7 @@ $gameID = $_GET['id'];
                                                     
                                                     <?php
                                                     
-                                                    } 
+                                                    }//end foreach $platform_array
                                                     
                                                     ?>
                                                 
@@ -178,7 +178,7 @@ $gameID = $_GET['id'];
                                                 
                                                 <?php 
                                                 
-                                            }
+                                            }//end if $platform_array
                                             
                                             ?>
 
@@ -204,8 +204,7 @@ $gameID = $_GET['id'];
 
                                                 $userCommentPost = mysqli_num_rows($result);
 
-                                            }
-
+                                            }//end if $result
                                             ?>
 
                                         </div>
@@ -270,7 +269,7 @@ $gameID = $_GET['id'];
 
                 echo '<h3>You already have Reviewed this game.</h3>';
                     
-            }
+            }//end if USERID != 0 && $userCommentPost < 1
                     
             ?>
 
