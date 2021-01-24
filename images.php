@@ -15,106 +15,104 @@ if ($link->connect_error) {
 
 $gameID = $_GET['id'];
 
-   if($result = mysqli_query($link, "SELECT * FROM e107_games where id=".$gameID)){
+if($result = mysqli_query($link, "SELECT * FROM e107_games where id=".$gameID)){
 
-        if(mysqli_num_rows($result) > 0){        
+    if(mysqli_num_rows($result) > 0){        
 
-       if($gameID != ""){
+        if($gameID != ""){
 
+            while($row = mysqli_fetch_array($result)){ 
 
-          while($row = mysqli_fetch_array($result)){ 
+                if($row["Screenshot1"] != ""){ 
 
-           
+                    $imageURL = "";
 
-            if($row["Screenshot1"] != ""){ 
+                    $imagePath = "";
 
-                     $imageURL = "";
+                    $imagePath = str_replace("{e_MEDIA_IMAGE}","",$row['Screenshot1']);
 
-                     $imagePath = "";
+                    $imageURL = SITEURL.e_MEDIA_IMAGE.$imagePath;
 
-                  $imagePath = str_replace("{e_MEDIA_IMAGE}","",$row['Screenshot1']);
+                    echo $imageURL;
 
-                  $imageURL = SITEURL.e_MEDIA_IMAGE.$imagePath;
+                }
 
-                echo $imageURL;
+                if($row["Screenshot2"] != ""){ 
 
-             }
+                    $imageURL = "";
 
-            if($row["Screenshot2"] != ""){ 
+                    $imagePath = "";
 
-                     $imageURL = "";
+                    $imagePath = str_replace("{e_MEDIA_IMAGE}","",$row['Screenshot2']);
 
-                     $imagePath = "";
+                    $imageURL = SITEURL.e_MEDIA_IMAGE.$imagePath;
 
-                  $imagePath = str_replace("{e_MEDIA_IMAGE}","",$row['Screenshot2']);
+                    echo $imageURL;
 
-                  $imageURL = SITEURL.e_MEDIA_IMAGE.$imagePath;
+                }
 
-                echo $imageURL;
+                if($row["Screenshot3"] != ""){ 
 
-             }
+                    $imageURL = "";
 
-            if($row["Screenshot3"] != ""){ 
+                    $imagePath = "";
 
-                     $imageURL = "";
+                    $imagePath = str_replace("{e_MEDIA_IMAGE}","",$row['Screenshot3']);
 
-                     $imagePath = "";
+                    $imageURL = SITEURL.e_MEDIA_IMAGE.$imagePath;
 
-                  $imagePath = str_replace("{e_MEDIA_IMAGE}","",$row['Screenshot3']);
+                    echo $imageURL;
 
-                  $imageURL = SITEURL.e_MEDIA_IMAGE.$imagePath;
+                }    
 
-                echo $imageURL;
+                if($row["Screenshot4"] != ""){ 
 
-             }    
+                    $imageURL = "";
 
-            if($row["Screenshot4"] != ""){ 
+                    $imagePath = "";
 
-                     $imageURL = "";
+                    $imagePath = str_replace("{e_MEDIA_IMAGE}","",$row['Screenshot4']);
 
-                     $imagePath = "";
+                    $imageURL = SITEURL.e_MEDIA_IMAGE.$imagePath;
 
-                  $imagePath = str_replace("{e_MEDIA_IMAGE}","",$row['Screenshot4']);
+                    echo $imageURL;
 
-                  $imageURL = SITEURL.e_MEDIA_IMAGE.$imagePath;
+                }
 
-                echo $imageURL;
+                if($row["Screenshot5"] != ""){ 
 
-             }
+                    $imageURL = "";
 
-            if($row["Screenshot5"] != ""){ 
+                    $imagePath = "";
 
-                     $imageURL = "";
+                    $imagePath = str_replace("{e_MEDIA_IMAGE}","",$row['Screenshot5']);
 
-                     $imagePath = "";
+                    $imageURL = SITEURL.e_MEDIA_IMAGE.$imagePath;
 
-                  $imagePath = str_replace("{e_MEDIA_IMAGE}","",$row['Screenshot5']);
+                    echo $imageURL;
 
-                  $imageURL = SITEURL.e_MEDIA_IMAGE.$imagePath;
+                }
 
-                echo $imageURL;
+                if($row["Screenshot6"] != ""){ 
 
-             }
+                    $imageURL = "";
 
-            if($row["Screenshot6"] != ""){ 
+                    $imagePath = "";
 
-                     $imageURL = "";
+                    $imagePath = str_replace("{e_MEDIA_IMAGE}","",$row['Screenshot6']);
 
-                     $imagePath = "";
+                    $imageURL = SITEURL.e_MEDIA_IMAGE.$imagePath;
 
-                  $imagePath = str_replace("{e_MEDIA_IMAGE}","",$row['Screenshot6']);
+                    echo $imageURL;
 
-                  $imageURL = SITEURL.e_MEDIA_IMAGE.$imagePath;
+                }
 
-                echo $imageURL;
+            }//end while row
+                    
+        }//end if $gameID
 
-             }
+    }//end if mysqli_num_rows
 
-             }
-                    }
-
-        }
-
-    }
+}//end if $result
 
 ?>
