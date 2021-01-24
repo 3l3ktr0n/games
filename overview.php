@@ -1,4 +1,4 @@
-<?php 
+<?php
 $servername = "localhost";
 $username = "vhost85252s0";
 $password = "0jKJd,x8Xs";
@@ -9,215 +9,174 @@ $link = mysqli_connect($servername, $username, $password, $dbname);
 
 // Check connection
 if ($link->connect_error) {
-  die("Connection failed: " . $link->connect_error);
+    die("Connection failed: " . $link->connect_error);
 }
 
+// make sure gameID exists
+$gameID = isset($_GET['id']) ?? 0;
 
-$gameID = $_GET['id'];
-           
-if($result = mysqli_query($link, 'SELECT id FROM e107_games where id = "'.$gameID.'"')){
+if($gameID > 0){
+    if($result = mysqli_query($link, 'SELECT id FROM e107_games where id = "'.$gameID.'"')){
         if(mysqli_num_rows($result) > 0){
             while($row = mysqli_fetch_array($result)){
-               $gameID = $row['id'];              
-            }
-        }
-    }
+                $gameID = $row['id'];
+            } // end while rows
+        } // endif rows
+    } // endif result
 
-if($gameID != "")
+    if($gameID != "") {
 
-  {
+        if($result = mysqli_query($link, "SELECT * FROM e107_games")) {
+            if(mysqli_num_rows($result) > 0) {
+                while($row = mysqli_fetch_array($result)) {
 
-    if($result = mysqli_query($link, "SELECT * FROM e107_games")){
-        if(mysqli_num_rows($result) > 0){
+                    if($row['id'] == $gameID) { ?>
 
-        ?>
+                        <h2 class="singleTitle"><?php echo $row['Title'];?></h2>
 
-        
+                        <!-- <div class="row ">
+                        <div class="game_tabing">
+                        <ul>
+                        <li data-id="overview">Overview</li>
+                        <li data-id="about">About</li>
+                        <li data-id="review">Review</li>
+                        <li data-id="news">News</li>
+                        <li data-id="screenshots">Screenshots</li>
+                        <li data-id="comment">Discussions</li>
+                        </ul>
+                        </div>
+                        </div>   -->
 
-        <?php
+                        <div class="row sep_section" id="overview">
 
-            while($row = mysqli_fetch_array($result)){
+                            <div class="col-sm-6">
+                                <?php
+                                $imagePath = str_replace("{e_MEDIA_IMAGE}","",$row['Media']);
+                                $imageURL = SITEURL.e_MEDIA_IMAGE.$imagePath;
+                                ?>
 
-              if($row['id'] == $gameID)
+                                <img src="<?php echo $imageURL; ?>" alt="" class="single_image">
 
-              {
+                                <div class="single_game_rating_top">
 
-        ?>
+                                    <?php
+                                    $rating = "";
+                                    if($result_rating = mysqli_query($link, "SELECT commentRating FROM e107_game_comment where postID=".$gameID)) {
 
-        <h2 class="singleTitle"><?php echo $row['Title'];?></h2>
+                                        $num_rows = $result_rating->num_rows;
 
-         <!-- <div class="row ">
-            <div class="game_tabing">
-          <ul>
+                                        $userReviewCount = mysqli_num_rows($result_rating);
 
-             <li data-id="overview">Overview</li>        
-             <li data-id="about">About</li>
-             <li data-id="review">Review</li>
-             <li data-id="news">News</li>          
-             <li data-id="screenshots">Screenshots</li>        
-             <li data-id="comment">Discussions</li>          
-          </ul>  
-        </div>        
-        </div>   -->     
+                                        if(mysqli_num_rows($result_rating) > 0) {
 
-        <div class="row sep_section" id="overview">
-       
-<div class="col-sm-6">
-      <?php 
+                                            $commentLoop = 0;
+                                            $sum_of_rating = 0;
+                                            $ratingResult = "";
 
-                  $imagePath = str_replace("{e_MEDIA_IMAGE}","",$row['Media']);
+                                            while($row_rating = mysqli_fetch_array($result_rating)) {
 
-                  $imageURL = SITEURL.e_MEDIA_IMAGE.$imagePath;
 
-              ?>                
 
-            <img src="<?php echo $imageURL; ?>" alt="" class="single_image">
+                                                if($row_rating["commentRating"] != 0) {
 
-<div class="single_game_rating_top">        
+                                                    $ratingResult = $row_rating["commentRating"];
 
-<?php
+                                                    $sum_of_rating += $ratingResult;
 
-                        $rating = "";
+                                                    $sum_of_rating_multi5 = $sum_of_rating*5;
 
-                if($result_rating = mysqli_query($link, "SELECT commentRating FROM e107_game_comment where postID=".$gameID))
 
-                {
 
-                    $num_rows = $result_rating->num_rows;
+                                                    $numberOfUsers_Array[] = $ratingResult;
 
-                    $userReviewCount = mysqli_num_rows($result_rating);
+                                                } // endif rating
+                                            } // endif while rating
+                                        } //endif rows
+                                    } // endif rating result
 
-                            if(mysqli_num_rows($result_rating) > 0){
+                                    $numberOfUsers_Array_Count = array_count_values($numberOfUsers_Array);
 
-                  $commentLoop = 0;
+                                    $numberOfUsers_Array_Count = array_sum($numberOfUsers_Array_Count);
 
-                  $ratingResult = "";
+                                    $numberOfUsers = $numberOfUsers_Array_Count*5;
 
-                    while($row_rating = mysqli_fetch_array($result_rating)){
+                                    $rating = $sum_of_rating_multi5/$numberOfUsers;
+                                    if($rating != "" && $num_rows > 0 ){
 
-                      
+                                        $rating = number_format($rating, 1); ?>
 
-                      if($row_rating["commentRating"] != 0)
 
-                      {
 
-                        $ratingResult = $row_rating["commentRating"];                    
+                                        <div class="rating_box">
+                                            <h4>Game rating</h4>
+                                            <?php
+                                            $rating_image = SITEURL."e107_plugins/games/images/rating_star.png";
+                                            ?>
+                                            <div class="rating_bg" style="background:url(<?php echo $rating_image; ?>);">
+                                                <?php echo $rating; ?>
+                                            </div>
+                                        </div>
+                                    <?php } //endif game id ?>
+                                </div> <!-- single game rating top -->
+                            </div> <!-- col-sm-6 -->
 
-                          $sum_of_rating += $ratingResult;
+                            <div class="col-sm-6">
 
-                          $sum_of_rating_multi5 = $sum_of_rating*5;
+                                <h3>Overview:</h3>
 
+                                <ul class="overview_list">
 
+                                <?php if($row["Known"] != ""){ ?>
 
-                          $numberOfUsers_Array[] = $ratingResult;
+                                    <li><strong>Also known as:</strong><span> <?php echo $row["Known"]; ?></span></li>
 
-                      }
+                                <?php } ?>
 
-                    }
+                                <?php if($row["Developer"] != ""){ ?>
 
-                                }
+                                    <li><strong>Developer:</strong><span> <?php echo $row["Developer"]; ?></span></li>
 
-                            }
+                                <?php } ?>
 
-                               $numberOfUsers_Array_Count = array_count_values($numberOfUsers_Array);
+                                <?php if($row["ReleaseDate"] != ""){ ?>
 
-                               $numberOfUsers_Array_Count = array_sum($numberOfUsers_Array_Count);
+                                    <li><strong>Release Date:</strong><span> <?php echo $row["ReleaseDate"]; ?></span></li>
 
-                               $numberOfUsers = $numberOfUsers_Array_Count*5;
+                                <?php } ?>
 
-                               $rating = $sum_of_rating_multi5/$numberOfUsers;
+                                <?php if($row["Series"] != ""){ ?>
 
+                                    <li><strong>Series:</strong><span> <?php echo $row["Series"]; ?></span></li>
 
+                                <?php } ?>
 
-                               if($rating != "" && $num_rows > 0 ){
+                                <?php if($row["Known"] != ""){ ?>
 
-  $rating = number_format($rating, 1);
+                                    <li><strong>Number of players:</strong><span> <?php echo $row["Players"]; ?></span></li>
 
-?>        
+                                <?php } ?>
 
+                                </ul>
 
+                            </div> <!-- col-sm-6 -->
 
-        <div class="rating_box">
-           <h4>Game rating</h4>          
-           <?php 
-           $rating_image = SITEURL."e107_plugins/games/images/rating_star.png";
-           ?>
-           <div class="rating_bg" style="background:url(<?php echo $rating_image; ?>);">  
-               <?php echo $rating; ?>           
-           </div>
-        </div>
+                            <div class="row game_content sep_section" id="content">
 
-      
+                                <div class="col-sm-12">
 
-<?php } ?>
+                                    <div class="single_content">
 
-</div>
+                                        <?php echo $row["Content"]; ?>
 
-                 
-</div>
-        <div class="col-sm-6">
+                                    </div>
 
-           <h3>Overview:</h3>
+                                </div>
 
-           <ul class="overview_list">
-
-           <?php if($row["Known"] != ""){?>
-
-             <li><strong>Also known as:</strong><span> <?php echo $row["Known"]; ?></span></li>             
-
-           <?php } ?>
-
-             <?php if($row["Developer"] != ""){?>
-
-             <li><strong>Developer:</strong><span> <?php echo $row["Developer"]; ?></span></li>             
-
-           <?php } ?>
-
-             <?php if($row["ReleaseDate"] != ""){?>
-
-             <li><strong>Release Date:</strong><span> <?php echo $row["ReleaseDate"]; ?></span></li>             
-
-           <?php } ?>
-
-             <?php if($row["Series"] != ""){?>
-
-             <li><strong>Series:</strong><span> <?php echo $row["Series"]; ?></span></li>             
-
-           <?php } ?>
-
-             <?php if($row["Known"] != ""){?>
-
-             <li><strong>Number of players:</strong><span> <?php echo $row["Players"]; ?></span></li>             
-
-           <?php } ?>
-
-           </ul>
-  
-        </div>       
-
-        <div class="row game_content sep_section" id="content">          
-
-            <div class="col-sm-12">    
-
-                 <div class="single_content">
-
+                            </div>
                     <?php
-
-                       echo $row["Content"];
-
-                      ?>                                          
-
-                 </div>                 
-
-            </div>
-
-      </div>
-
-<?php
-              }
-            }
-        }
-    }
-  }
-
-?>
+                    } // endif rowID
+                } // end while
+            } // end if rows
+        } // endif result
+    } // endif gameid != ''
+} // endif gameID > 0
