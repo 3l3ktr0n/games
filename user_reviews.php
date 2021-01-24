@@ -1,4 +1,9 @@
-<?php 
+<?php
+/*
+mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+*/
 $servername = "localhost";
 $username = "vhost85252s0";
 $password = "0jKJd,x8Xs";
@@ -21,29 +26,73 @@ $gameID = $_GET['id'];
 
 <?php 
 
+$rating = "";
+
+if($result_rating = mysqli_query($link, "SELECT commentRating FROM e107_game_comment where postID=".$gameID))
+
+	{
+
+		$num_rows = $result_rating->num_rows;
+
+		$userReviewCount = mysqli_num_rows($result_rating);
+
+		if(mysqli_num_rows($result_rating) > 0){
+
+		//$commentLoop = 0;
+
+		$ratingResult = "";
+
+			while($row_rating = mysqli_fetch_array($result_rating)){
+
+				if($row_rating["commentRating"] != 0)
+
+					{
+
+						$ratingResult = $row_rating["commentRating"];							    	
+
+						$sum_of_rating += $ratingResult;
+
+						$sum_of_rating_multi5 = $sum_of_rating*5;
+
+                        $numberOfUsers_Array[] = $ratingResult;
+
+					}
+
+				}
+
+            }
+
+    }
+
+$numberOfUsers_Array_Count = array_count_values($numberOfUsers_Array);
+
+$numberOfUsers_Array_Count = array_sum($numberOfUsers_Array_Count);
+
+$numberOfUsers = $numberOfUsers_Array_Count*5;
+
+$rating = $sum_of_rating_multi5/$numberOfUsers;
+
+if($rating != "" && $num_rows > 0 ){
+
+?>        
+
+<div class="rating_box">
+    <h4>Game rating</h4>          
+        <?php 
+        $rating_image = SITEURL."e107_plugins/games/images/rating_star.png";
+        ?>
+        <div class="rating_bg" style="background:url(<?php echo $rating_image; ?>);">  
+        <?php echo $rating; ?>           
+        </div>
+</div>
+
+<?php }   
+
+  //$rating = number_format($rating, 1);
+
     if($result = mysqli_query($link, "SELECT * FROM e107_game_comment  where postID=".$gameID)){
 
       $commentsNum = mysqli_num_rows($result);
-
-        if(mysqli_num_rows($result) > 0){
-
-          $commentLoop = 0;
-
-          while($row = mysqli_fetch_array($result)){
-
-            $commentLoop++;
-
-              $postComment = $row["postComment"];              
-
-              $commentID = $row["commentID"];              
-
-              $commentDate = $row["commentDate"];              
-
-              $commentRating = $row["commentRating"];              
-
-              }
-
-            }
 
         }
 ?>
@@ -378,9 +427,6 @@ $gameID = $_GET['id'];
 
             </div>
 
-
-
-
             <?php } 
 
 else
@@ -396,19 +442,34 @@ else
 <h3>User reviews</h3>
 <?php 
 
-        $actionPath_delete = SITEURL."game_update/game_comment_delete.php";
+        //$actionPath_delete = SITEURL."game_update/game_comment_delete.php";
 
-    if($result = mysqli_query($link, "SELECT * FROM e107_game_comment  where postID=".$gameID)){
-
+/*    if($result = mysqli_query($link, "SELECT * FROM e107_game_comment  where postID=".$gameID)){
+echo mysqli_num_rows($result); echo "<BR><BR>";
         if(mysqli_num_rows($result) > 0){
 
-          $commentLoop = 0;
+        $commentLoop = 0;
+/*
+while($row = mysqli_fetch_array($result))
+{
+$rows[] = $row;
+}
 
-        while($row = mysqli_fetch_array($result)){
+foreach($rows as $row)
+{
+echo $row['commentTitle'];
+echo '<br>';
+echo $row['commentDate'];
+echo '<br>';
+echo $row['postComment'];
+echo '<br>';
+}*/
+/*
+        while($row = mysqli_fetch_assoc($result)){
+print_r($row); echo "<BR><BR>";
+        $commentLoop++;
 
-          $commentLoop++;
-
-            $postComment = $row["postComment"];              
+            $postComment = $row["postComment"];             
 
             $commentID = $row["commentID"];              
 
@@ -416,304 +477,60 @@ else
 
             $commentTitle = $row["commentTitle"];              
 
-            $commentUserID = $row["commentUserID"];            
+            $commentUserID = $row["commentUserID"];
+
+            $userData = e107::user($commentUserID);
+            $userName = $userData['user_name'];            
 
             $commentRating = $row["commentRating"];              
 
+            $commentPlatform = $row["commentPlatform"];
 
-
-?>
-
-            <div class="row">
-            <div class="col-sm-12">
-      <div class="game_box reviewBOX userReviewsBox">              
-              <div class="reviewBox_left">
-
-              <div class="reviewID"><?php echo $currentReviewID;  ?></div>
-
-                
-
-                <div class="reviewTitle user_reviewTitle">
-
-                  
-
-                    <h2> 
-                      <?php echo $commentTitle;?>                            
-                  </h2>
-
-                 
-                    <div class="userReview_info">
-                      <span>Date: <?php echo $commentDate = $row["commentDate"]; ?></span>
-                    <?php 
-                          $commentUserID = $row["commentUserID"]; 
-                $userData = e107::user($commentUserID);
-                $userName = $userData['user_name'];
-                    ?>
-                    <span>Review by: <?php echo $userName; ?></span>
-                    <?php $commentPlatform = $row["commentPlatform"];  ?>
-                    <span>Platform: <?php echo $commentPlatform?></span>
-                </div>
-
-              </div>
-
-
-
-              <div class="review_Content">
-
-        
-
-              <div class="revie_shortContent">
-
-                <?php echo $postComment; ?>         
-
-              </div>
-
-
-
-                 <div class="reviewReadmore user_reviewReadmore">
-<?php 
-  $userReviewURL = SITEURL."user_review.php?id=".$commentID;
-?>
-                   <span> <a href="<?php echo $userReviewURL;?>" target="_blank"> Read more</a></span>
-
-                   
-
-              </div>
-
-
-
-              </div>
-
-            </div>
-
-            <div class="reviewBox_right">
-
-                <div class="rating_box">
-
-             <h4>Game rating</h4>          
-
-                 <div class="rating_bg" style="background:url(<?php echo $starImage; ?>);">
-
-             <?php 
-
-               echo $commentRating; 
-
-             ?>           
-
-             </div>
-
-        </div>                     
-
-            </div>
-
-
-
-            </div></div>
-            </div>
-
-
-
-<?php 
+echo $currentReviewID;
+echo $commentTitle;
+echo $commentDate;                            
+echo $userName;
+echo $commentPlatform;
+echo $postComment;        
+echo $userReviewURL = SITEURL."user_review.php?id=".$commentID;
+//<a href="echo $userReviewURL;" target="_blank"> Read more</a>
+//<div class="rating_bg" style="background:url(echo $starImage;);
+echo $commentRating;
+echo $gameID;
+echo $postID;
+echo $row;
 
       }
 
-    }
-
   }
 
-if($gameID != "")
 
-  {
+}*/
 
-    if($result = mysqli_query($link, "SELECT * FROM e107_games")){
 
+$sql = "SELECT * FROM e107_game_comment WHERE postID=".$gameID;
+$result = mysqli_query($link, $sql);
+$result_check = mysqli_num_rows($result);
 
+    if($result_check > 0){
 
-        if(mysqli_num_rows($result) > 0){
+        while($row = mysqli_fetch_array($result)){
+            $commentID = $row['commentID'];
+            $commentTitle = $row['commentTitle'];
+            $commentDate = $row['commentDate'];
+            $commentRating = $row['commentRating'];
+            $commentPlatform = $row['commentPlatform'];
+            $commentPost = $row['postComment'];
+            $userReviewURL = SITEURL."user_review.php?id=".$commentID;
 
-        ?>
+            echo $commentTitle . "<BR>";
+            echo $commentDate . "<BR>";
+            echo $commentRating . "<BR>";
+            echo $commentPlatform . "<BR>";
+            echo $commentPost . "<BR>";
+            ?><a href="<?php echo $userReviewURL; ?>" target="_blank"> Read more</a><BR><BR><?php
+        }
 
-        
-
-        <?php
-
-            while($row = mysqli_fetch_array($result)){
-
-              if($row['id'] == $gameID)
-
-              {
-
-                $newsCatSelected = $row['NewsCategory'];
-
-
-
-               $reviewIDs = $row['reviewSelected'];              
-
-               $reviewID_Array = explode(",", $reviewIDs);
-
-               
-
-               $reviewLoop = 0;
-
-               foreach($reviewID_Array as $reviewID)
-
-               {
-
-                 $reviewLoop++;
-
-                 if($reviewLoop == 1)
-
-                 {
-
-                     $reviewQuery =  'WHERE (ID='.$reviewID.')';
-
-                 }
-
-                 else if($reviewLoop >= 1)
-
-                 {
-
-                     $reviewQuery .=  ' or (ID='.$reviewID.')';
-
-                 }
-
-               }  
-$reviewGameQuery = 'WHERE FIND_IN_SET('.$gameID.',ReviewGameSelected)';
-
-                   if($result_review = mysqli_query($link, "SELECT * FROM e107_games_reviews ".$reviewGameQuery)){
-
-                           if(mysqli_num_rows($result_review) > 0){
-                    ?>
-
-                    <h3 style="display: none;">What Users says about this Game.</h3>
-
-                    <?php
-
-                             while($row_review = mysqli_fetch_array($result_review)){
-
-                             $review_title = $row_review["Title"];                        
-
-                    $imagePath = str_replace("{e_MEDIA_IMAGE}","",$row_review['Image']);
-
-                    $imageURL = SITEURL.e_MEDIA_IMAGE.$imagePath;
-
-                    $currentReviewID = $row_review['ID'];
-
-                    $reviewID_URL = SITEURL."review.php?id=".$currentReviewID;
-
-
-
-                    $reviewTitle = $row_review['Title'];
-
-                    $reviewRating = $row_review['Rating'];
-
-                    $reviewDescription = $row_review['Description'];
-
-                    $reviewType = $row_review['ReviewType'];
-
-
-                        ?>
-
-                            <div class="col-sm-12 game_box reviewBOX">
-
-                              <div class="reviewBox_left">
-
-                              <div class="reviewID"><?php echo $currentReviewID;  ?></div>
-
-                            
-
-                            <div class="reviewTitle">
-
-                          <a href="<?php echo $reviewID_URL; ?>">
-
-                            <?php echo $reviewTitle;?>                            
-
-                            </a>
-
-                      </div>
-
-
-
-                      <div class="review_Content">
-
-                      <div class="review_cover">
-
-                      <a class="img" href="<?php echo $reviewID_URL; ?>">  
-
-                        <img src="<?php echo $imageURL; ?>">
-
-                        </a>
-
-                      </div>
-
-                      <div class="revie_shortContent">
-
-                        <p><?php  echo $reviewDescription; ?></p>
-
-                        <div class="reviewReadmore">
-
-                          <a href="<?php echo $reviewID_URL; ?>">
-
-                               Read more
-
-                             </a>
-
-                         </div>
-
-                      </div>
-
-                      </div>
-
-
-
-
-
-                            </div>
-
-                            <div class="reviewBox_right">
-
-                              <div class="rating_box">
-
-                     <h4>Game rating</h4>          
-
-                             <div class="rating_bg" style="background:url(<?php echo $starImage; ?>);">  
-
-                     <?php 
-
-                       echo $reviewRating; 
-
-                     ?>           
-
-                     </div>
-
-                </div>                     
-
-                            </div>
-
-
-
-                    </div>
-
-                        <?php
-
-                          
-
-                              }
-
-                           }
-
-                        }
-
-                              }
-
-                           }
-
-                        }
-
-                           }
-
-                        }
-
-             
+    }
 
 ?>
