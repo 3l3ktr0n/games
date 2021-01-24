@@ -37,19 +37,19 @@ if($gameID != "")
 
               {
 
-                $newsCatSelected = $row['NewsCategory'];
+                //$newsCatSelected = $row['NewsCategory'];
 
 
 
                $reviewIDs = $row['reviewSelected'];              
 
-               $reviewID_Array = explode(",", $reviewIDs);
+               //$reviewID_Array = explode(",", $reviewIDs);
 
                
 
                $reviewLoop = 0;
 
-               foreach($reviewID_Array as $reviewID)
+               /*foreach($reviewID_Array as $reviewID)
 
                {
 
@@ -71,7 +71,7 @@ if($gameID != "")
 
                  }
 
-               }  
+               }  */
 $reviewGameQuery = 'WHERE FIND_IN_SET('.$gameID.',ReviewGameSelected)';
 
                    if($result_review = mysqli_query($link, "SELECT * FROM e107_games_reviews ".$reviewGameQuery)){
@@ -79,12 +79,12 @@ $reviewGameQuery = 'WHERE FIND_IN_SET('.$gameID.',ReviewGameSelected)';
                            if(mysqli_num_rows($result_review) > 0){
                     ?>
 
-                    <h3 style="display: none;">What Users says about this Game.</h3>
+                    <h3>What Users says about this Game.</h3>
 
                     <?php
 
                              while($row_review = mysqli_fetch_array($result_review)){
-
+//print_r($row_review);
                              $review_title = $row_review["Title"];                        
 
                     $imagePath = str_replace("{e_MEDIA_IMAGE}","",$row_review['Image']);
